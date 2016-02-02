@@ -285,7 +285,7 @@ class Recorder(threading.Thread):
                 else:
                     return cur.fetchall()
 
-        except sqlite3.IntegrityError:
+        except (sqlite3.IntegrityError, sqlite3.OperationalError):
             _LOGGER.exception(
                 "Error querying the database using: %s", sql_query)
             return []
@@ -299,6 +299,7 @@ class Recorder(threading.Thread):
         db_path = self.hass.config.path(DB_FILE)
         self.conn = sqlite3.connect(db_path, check_same_thread=False)
         self.conn.row_factory = sqlite3.Row
+        self.conn.create_function("instr", 2, instr)
 
         # Make sure the database is closed whenever Python exits
         # without the STOP event being fired.
@@ -461,6 +462,16 @@ class Recorder(threading.Thread):
 def _adapt_datetime(datetimestamp):
     """ Turn a datetime into an integer for in the DB. """
     return dt_util.as_utc(datetimestamp.replace(microsecond=0)).timestamp()
+
+
+def instr(string, substring):
+    """Find substring in string.
+
+    Some SQLite versions do not have this so rolled our own (Travis :/).
+    """
+    if string is None or substring is None:
+        return None
+    return string.find(substring) + 1
 
 
 def _verify_instance():
