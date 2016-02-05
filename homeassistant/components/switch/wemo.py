@@ -153,6 +153,18 @@ class WemoSwitch(SwitchDevice):
         """ True if switch is on. """
         return self.wemo.get_state()
 
+    @property
+    def available(self):
+        """ True if switch is available. """
+        if (self.wemo.model_name == 'Insight' and
+            self.insight_params is None):
+            return False
+
+        if (self.wemo.model_name == 'Maker' and
+            self.maker_params is None):
+            return False
+        return True
+
     def turn_on(self, **kwargs):
         """ Turns the switch on. """
         self.wemo.on()
