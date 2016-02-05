@@ -81,6 +81,7 @@ def setup_platform(hass, config, add_devices_callback, discovery_info=None):
                 entity_id,
                 event.values['Command']
             )
+            rfxtrx.RFX_DEVICES[entity_id]._brightness = (event.values['Dim level'] * 255 // 100)
             if event.values['Command'] == 'On'\
                     or event.values['Command'] == 'Off':
 
@@ -88,7 +89,6 @@ def setup_platform(hass, config, add_devices_callback, discovery_info=None):
                 is_on = event.values['Command'] == 'On'
                 # pylint: disable=protected-access
                 rfxtrx.RFX_DEVICES[entity_id]._state = is_on
-                rfxtrx.RFX_DEVICES[entity_id]._brightness = (event.values['Dim level'] * 255 // 100)
                 rfxtrx.RFX_DEVICES[entity_id].update_ha_state()
 
                 # Fire event
