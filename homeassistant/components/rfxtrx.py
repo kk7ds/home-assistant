@@ -9,7 +9,7 @@ https://home-assistant.io/components/rfxtrx/
 import logging
 from homeassistant.util import slugify
 
-REQUIREMENTS = ['https://github.com/Danielhiversen/pyRFXtrx/archive/0.2.zip' +
+REQUIREMENTS = ['https://github.com/Danielhiversen/pyRFXtrx/archive/cmd_string.zip' +
                 '#RFXtrx==0.2']
 
 DOMAIN = "rfxtrx"

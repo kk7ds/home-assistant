@@ -50,7 +50,7 @@ def setup_platform(hass, config, add_devices_callback, discovery_info=None):
 
     def light_update(event):
         """ Callback for light updates from the RFXtrx gateway. """
-        if not isinstance(event.device, rfxtrxmod.LightingDevice):
+        if not isinstance(event.device, rfxtrxmod.LightingDevice) or not event.device.dimmable:
             return
 
         # Add entity if not exist and the automatic_add is True
@@ -88,6 +88,7 @@ def setup_platform(hass, config, add_devices_callback, discovery_info=None):
                 is_on = event.values['Command'] == 'On'
                 # pylint: disable=protected-access
                 rfxtrx.RFX_DEVICES[entity_id]._state = is_on
+                rfxtrx.RFX_DEVICES[entity_id]._brightness = (event.values['Dim level'] * 255 // 100)
                 rfxtrx.RFX_DEVICES[entity_id].update_ha_state()
 
                 # Fire event
